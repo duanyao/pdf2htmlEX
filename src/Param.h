@@ -64,6 +64,7 @@ struct Param
 
     // background image
     std::string bg_format;
+    int svg_file_size_limit;
     int svg_node_count_limit;
     int svg_embed_bitmap;
 

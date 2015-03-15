@@ -166,6 +166,20 @@ bool CairoBackgroundRenderer::render_page(PDFDoc * doc, int pageno)
             throw string("Error in cairo: ") + cairo_status_to_string(status);
     }
 
+    //check the size of the svg file, fall back to bitmap_renderer if necessary.
+    if (param.svg_file_size_limit >= 0)
+    {
+        struct stat stat_buf;
+        int result = stat(fn.c_str(), &stat_buf);
+        if (result != 0)
+            throw string("Error stat file ") + fn;
+        if (stat_buf.st_size > param.svg_file_size_limit)
+        {
+            html_renderer->tmp_files.add(fn);
+            return false;
+        }
+    }
+
     //check node count in the svg file, fall back to bitmap_renderer if necessary.
     if (param.svg_node_count_limit >= 0)
     {
